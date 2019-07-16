@@ -1,7 +1,10 @@
-package com.cs.rfq.decorator.extractors;
+package com.cs.rfq.decorator;
 
 import com.cs.rfq.decorator.Rfq;
 import com.cs.rfq.decorator.TradeDataLoader;
+import com.cs.rfq.decorator.extractors.AbstractSparkUnitTest;
+import com.cs.rfq.decorator.extractors.AverageTradedPriceOverPastWeek;
+import com.cs.rfq.decorator.extractors.RfqMetadataFieldNames;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.junit.Test;
@@ -10,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class AverageTradedPriceOverPastWeekTest extends AbstractSparkUnitTest{
+public class AverageTradedPriceOverPastWeekTest extends AbstractSparkUnitTest {
 
     @Test
     public void AverageTradedPriceWhenTradesPresent() {
@@ -34,6 +37,6 @@ public class AverageTradedPriceOverPastWeekTest extends AbstractSparkUnitTest{
 
         Map<RfqMetadataFieldNames, Object> averageTradedPrice = AverageTradedPrice.extractMetaData(rfq, session, trades);
 
-        assertEquals((Double) 0.0, averageTradedPrice.get(RfqMetadataFieldNames.averageTradedPriceOverPastWeek));
+        assertEquals((Double) 139.857, averageTradedPrice.get(RfqMetadataFieldNames.averageTradedPriceOverPastWeek));
     }
 }
