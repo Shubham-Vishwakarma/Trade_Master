@@ -32,6 +32,22 @@ public class TotalVolumeTradedForInstrumentTest extends AbstractSparkUnitTest {
         //Total is 850000
         TotalVolumeTradedForInstrumentExtractor totalVolumeTradedForInstrumentExtractor = new TotalVolumeTradedForInstrumentExtractor();
         Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades);
-        Assert.assertEquals(850000,volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
+        Assert.assertEquals(Long.valueOf(850000),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
+
+        validRfqJson = "{" +
+                "'id': '123ABC', " +
+                "'traderId': 3351266293154445953, " +
+                "'entityId': 5561279226039690843, " +
+                "'instrumentId': 'AT0000A0N9A0', " +
+                "'qty': 250000, " +
+                "'price': 1.58, " +
+                "'side': 'B' " +
+                "}";
+
+        rfq = Rfq.fromJson(validRfqJson);
+        //Total is 850000
+        totalVolumeTradedForInstrumentExtractor = new TotalVolumeTradedForInstrumentExtractor();
+        volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades);
+        Assert.assertEquals(Long.valueOf(50000),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
     }
 }
