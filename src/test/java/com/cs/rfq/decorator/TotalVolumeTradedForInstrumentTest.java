@@ -5,6 +5,7 @@ import com.cs.rfq.decorator.extractors.RfqMetadataFieldNames;
 import com.cs.rfq.decorator.extractors.TotalVolumeTradedForInstrumentExtractor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class TotalVolumeTradedForInstrumentTest extends AbstractSparkUnitTest {
         Rfq rfq = Rfq.fromJson(validRfqJson);
 
         //Total is 850000
-        TotalVolumeTradedForInstrumentExtractor totalVolumeTradedForInstrumentExtractor = new TotalVolumeTradedForInstrumentExtractor("2008-01-01");
+        TotalVolumeTradedForInstrumentExtractor totalVolumeTradedForInstrumentExtractor = new TotalVolumeTradedForInstrumentExtractor();
         Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades);
         Assert.assertEquals(850000,volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
     }
