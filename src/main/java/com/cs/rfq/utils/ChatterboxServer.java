@@ -7,6 +7,8 @@ import java.net.Socket;
 /**
  * Simple chat server capable of sending and receiving String lines on separate in/out port numbers.
  */
+
+//{'id': 9315444593154445,'traderId': 3351266293154445953,'entityId': 5561279226039690843,'instrumentId': 'AT0000383864','qty': 250000,'price': 1.58, 'side': 'B'}
 public class ChatterboxServer {
 
     public static final int SERVER_PORT_OUT = 9000;
