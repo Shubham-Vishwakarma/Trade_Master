@@ -68,7 +68,7 @@ public class GenerateDummyTrades {
             instruments.forEach(i -> {
                 long o = Math.abs(r.nextLong());
                 tradeDates(trades_min, trades_max).forEach(tradeDate -> {
-                    trades.add(new TradeCaptureReport(c, i, tradeDate,o));
+                    trades.add(new TradeCaptureReport(c, i, tradeDate,1.3,2L,1,67L));
                 });
             });
         });
