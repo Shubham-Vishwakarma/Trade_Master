@@ -29,7 +29,11 @@ public class RfqProcessor {
 
     private final Dataset<Row> trades;
 
+    private final Dataset<Row> rfqs;
+
     private final List<RfqMetadataExtractor> extractors = new ArrayList<>();
+
+    private final List<RfqMetadataExtractor> extractor2 = new ArrayList<>();
 
     private final MetadataPublisher publisher = new MetadataJsonLogPublisher();
 
@@ -40,10 +44,14 @@ public class RfqProcessor {
         //TODO: use the TradeDataLoader to load the trade data archives
         this.trades = new TradeDataLoader().loadTrades(session, "src/test/resources/trades/*.json");
 
+        this.rfqs = new RfqDataLoader().loadTrades(session, "src/test/resources/rfqs/*.json");
+
         //TODO: take a close look at how these two extractors are implemented
         extractors.add(new TotalTradesWithEntityExtractor());
-        extractors.add(new VolumeTradedWithEntityYTDExtractor());
-        extractors.add(new TotalVolumeTradedForInstrumentExtractor());
+        extractors.add(new InstrumentLiquidityExtractor());
+        extractor2.add(new VolumeTradedWithEntityYTDExtractor());
+        extractor2.add(new TotalVolumeTradedForInstrumentExtractor());
+        extractor2.add(new StrikeRateExtractor());
     }
 
     public void startSocketListener() throws InterruptedException {
@@ -70,6 +78,10 @@ public class RfqProcessor {
         //TODO: get metadata from each of the extractors
         extractors.forEach(e -> {
             metadata.putAll(e.extractMetaData(rfq, session, trades));
+        });
+
+        extractor2.forEach(e -> {
+            metadata.putAll(e.extractMetaData(rfq, session, trades, rfqs));
         });
 
         //TODO: publish the metadata

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Utility program to generate test trade data.
@@ -35,6 +36,15 @@ public class GenerateDummyTrades {
     private static final int trades_max = 15;
 
     public static void main(String[] args) throws Exception {
+        //to test reading of json file
+//        Stream<String> rfqs = Files.lines(Paths.get(rfqs_file));
+//        rfqs.forEach(r->{
+//            String[] fields = r.split(",");
+//            //System.out.println(fields[0]);
+//
+//        });
+
+
 
         //load counterparty data
         Set<Counterparty> counterparties = Files.lines(Paths.get(counterparties_file))
@@ -50,12 +60,14 @@ public class GenerateDummyTrades {
                 .map(Instrument::fromCsv)
                 .collect(Collectors.toSet());
 
+        Random r = new Random();
         //generate test data for trades
         List<TradeCaptureReport> trades = new ArrayList<>();
         counterparties.forEach(c -> {
             instruments.forEach(i -> {
+                long o = Math.abs(r.nextLong());
                 tradeDates(trades_min, trades_max).forEach(tradeDate -> {
-                    trades.add(new TradeCaptureReport(c, i, tradeDate));
+                    trades.add(new TradeCaptureReport(c, i, tradeDate,1.3,2L,1,67L));
                 });
             });
         });

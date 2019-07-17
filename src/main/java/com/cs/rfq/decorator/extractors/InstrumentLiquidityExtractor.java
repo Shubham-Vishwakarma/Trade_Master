@@ -9,29 +9,27 @@ import org.joda.time.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AverageTradedPriceOverPastWeek implements RfqMetadataExtractor{
-
-
+public class InstrumentLiquidityExtractor implements RfqMetadataExtractor {
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
         long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
+        long pastMonthMs = DateTime.now().withMillis(todayMs).minusMonths(1).getMillis();
 
-        String query = String.format("SELECT avg(LastPx) from trade where EntityId='%s' AND SecurityId='%s' AND TradeDate >= '%s'",
-                rfq.getEntityId(),
+        String query = String.format("SELECT sum(LastQty) from trade  where SecurityID='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
-                pastWeekMs);
+                pastMonthMs);
 
         trades.createOrReplaceTempView("trade");
+
         Dataset<Row> sqlQueryResults = session.sql(query);
 
-        Object averageTradedPrice = sqlQueryResults.first().get(0);
-        if (averageTradedPrice == null) {
-            averageTradedPrice = 0.0;
+        Object volume = sqlQueryResults.first().get(0);
+        if (volume == null) {
+            volume = 0L;
         }
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(RfqMetadataFieldNames.averageTradedPriceOverPastWeek, averageTradedPrice);
+        results.put(RfqMetadataFieldNames.volumeTradedForInstrumentPastMonth, volume);
         return results;
     }
 

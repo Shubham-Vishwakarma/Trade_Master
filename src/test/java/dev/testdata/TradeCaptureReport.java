@@ -42,21 +42,22 @@ public class TradeCaptureReport {
     String TransactTime = "";//UTCTimestamp eg: YYYYMMDD-HH:MM:SS
     final int NoSides = 1;//number of sides
     int Side = 1; //: 1 = buy, 2 = sell
-    long OrderID = Math.abs(r.nextLong());//must be unique
+    long OrderID;//must be unique
     String Currency = "EUR";// 3 letter code: USD, EUR, GBP etc
 
     DateTimeFormatter tradeDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
     DateTimeFormatter transactTimeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HH:mm:ss");
 
-    public TradeCaptureReport(Counterparty c, Instrument i, DateTime d) {
+    public TradeCaptureReport(Counterparty c, Instrument i, DateTime d ,double price ,long qty,int side,long rfqId) {
+        OrderID = rfqId;
         TraderId = c.traderId;
         EntityId = c.entityId;
         SecurityID = i.isin;
-        LastQty = 50_000 * (int) ((Math.random() * 10) + 1); // 1-10 * 50_000
-        LastPx = randomizePrice(i.price);
+        LastQty = qty; // 1-10 * 50_000
+        LastPx = price;
         TradeDate = tradeDateFormatter.print(d);
         TransactTime = transactTimeFormatter.print(d);
-        Side = (Math.random() > 0.5) ? 1 : 2;
+        Side = side;
     }
 
     private static double randomizePrice(double start) {
