@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,12 +19,16 @@ public class GenerateDummyRfq {
 
     //output trade reports file:
     private static final String rfqs_file = "src/test/resources/trades/rfqs.json";
+    private static final String trades_file = "src/test/resources/trades/trades.json";
+
 
     //variables:
     private static final int counterparties_limit = 10;
     private static final int instruments_limit = 10;
     private static final int trades_min = 1;
     private static final int trades_max = 15;
+
+    private static Random r = new Random();
 
     public static void main(String[] args) throws Exception {
 //        {
@@ -52,21 +57,33 @@ public class GenerateDummyRfq {
 
         //generate test data for rfqs
         List<Rfq> rfqs = new ArrayList<>();
+        List<TradeCaptureReport> trades = new ArrayList<>();
         counterparties.forEach(c -> {
             instruments.forEach(i -> {
-                    rfqs.add(new Rfq(c, i));
+                    int num = (int) (Math.random() * (20)) + 1;
+                    tradeDates(trades_min, trades_max).forEach(tradeDate -> {
+                            long o = Math.abs(r.nextLong());
+                            rfqs.add(new Rfq(c, i, o ));
+                            if(num%2==0)
+                            trades.add(new TradeCaptureReport(c, i, tradeDate,o));
+                    });
             });
         });
-
-
+        
         //order the results by date
 //        trades.sort(Comparator.comparing(t -> t.TransactTime));
 
         //save to rfqs file
-        PrintWriter out = new PrintWriter(new FileWriter(Paths.get(rfqs_file).toFile()));
-        rfqs.forEach(out::println);
-        out.flush();
-        out.close();
+        PrintWriter out1 = new PrintWriter(new FileWriter(Paths.get(rfqs_file).toFile()));
+        rfqs.forEach(out1::println);
+        out1.flush();
+        out1.close();
+
+        PrintWriter out2 = new PrintWriter(new FileWriter(Paths.get(trades_file).toFile()));
+        trades.forEach((out2::println));
+        out2.flush();
+        out2.close();
+
 
 //        System.out.println("Generated: " + trades.size() + " records");
     }
@@ -74,7 +91,7 @@ public class GenerateDummyRfq {
     /*
      * Generates between min (inclusive) and max (exclusive) random DateTimes over the past year
      */
-    private static List<DateTime> rfqDates(int min, int max) {
+    private static List<DateTime> tradeDates(int min, int max) {
         int num = min + (int) (Math.random() * (max - min));
         List<DateTime> results = new ArrayList<>();
 

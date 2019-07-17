@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Utility program to generate test trade data.
@@ -24,6 +25,7 @@ public class GenerateDummyTrades {
     //input counterparty and instrument files:
     private static final String counterparties_file = "src/test/resources/trades/counterparty-static.csv";
     private static final String instruments_file = "src/test/resources/trades/instrument-static.csv";
+    private static final String rfqs_file = "src/test/resources/trades/rfqs.json";
 
     //output trade reports file:
     private static final String trades_file = "src/test/resources/trades/trades.json";
@@ -35,6 +37,15 @@ public class GenerateDummyTrades {
     private static final int trades_max = 15;
 
     public static void main(String[] args) throws Exception {
+        //to test reading of json file
+//        Stream<String> rfqs = Files.lines(Paths.get(rfqs_file));
+//        rfqs.forEach(r->{
+//            String[] fields = r.split(",");
+//            //System.out.println(fields[0]);
+//
+//        });
+
+
 
         //load counterparty data
         Set<Counterparty> counterparties = Files.lines(Paths.get(counterparties_file))
@@ -50,12 +61,14 @@ public class GenerateDummyTrades {
                 .map(Instrument::fromCsv)
                 .collect(Collectors.toSet());
 
+        Random r = new Random();
         //generate test data for trades
         List<TradeCaptureReport> trades = new ArrayList<>();
         counterparties.forEach(c -> {
             instruments.forEach(i -> {
+                long o = Math.abs(r.nextLong());
                 tradeDates(trades_min, trades_max).forEach(tradeDate -> {
-                    trades.add(new TradeCaptureReport(c, i, tradeDate));
+                    trades.add(new TradeCaptureReport(c, i, tradeDate,o));
                 });
             });
         });
