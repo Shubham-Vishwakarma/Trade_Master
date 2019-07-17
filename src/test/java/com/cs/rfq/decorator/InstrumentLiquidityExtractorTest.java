@@ -31,7 +31,7 @@ public class InstrumentLiquidityExtractorTest extends AbstractSparkUnitTest {
     }
 
     @Test
-    public void StrikerRateTestFirstCustomer(){
+    public void LiquidityTestFirstInstrument(){
 
         String validRfqJson = "{" +
                 "'id': '123ABC', " +
@@ -46,12 +46,12 @@ public class InstrumentLiquidityExtractorTest extends AbstractSparkUnitTest {
 
         Rfq rfq = Rfq.fromJson(validRfqJson);
 
-        Map<RfqMetadataFieldNames,Object> srMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades);
-        Assert.assertEquals(Long.valueOf(850000),srMap.get(RfqMetadataFieldNames.volumeTradedForInstrumentPastMonth));
+        Map<RfqMetadataFieldNames,Object> liqMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades);
+        Assert.assertEquals(Long.valueOf(850000),liqMap.get(RfqMetadataFieldNames.volumeTradedForInstrumentPastMonth));
     }
 
     @Test
-    public void StrikeRateTestSecondCustomer(){
+    public void LiquidityTestSecondInstrument(){
         String validRfqJson = "{" +
                 "'id': '123ABC', " +
                 "'traderId': 3351266293154445953, " +
@@ -65,18 +65,18 @@ public class InstrumentLiquidityExtractorTest extends AbstractSparkUnitTest {
 
         Rfq rfq = Rfq.fromJson(validRfqJson);
 
-        Map<RfqMetadataFieldNames,Object> srMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades, rfqs);
-        Assert.assertEquals(Double.valueOf(Precision.round(200.0/6,2)),Double.valueOf(Precision.round(Double.valueOf(srMap.get(RfqMetadataFieldNames.strikeRate).toString()),2)));
+        Map<RfqMetadataFieldNames,Object> liqMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades);
+        Assert.assertEquals(Long.valueOf(50000),liqMap.get(RfqMetadataFieldNames.volumeTradedForInstrumentPastMonth));
     }
 
     @Test
-    public void StrikeRateTestInvalidCustomer(){
+    public void LiquidityTestInvalidInstrument(){
         String validRfqJson = "{" +
                 "'id': '123ABC', " +
                 "'traderId': 3351266293154445953, " +
                 "'customerId': 234530022200, " +
                 "'entityId': 5561279226039690843, " +
-                "'instrumentId': 'BT0000A0VRQ6', " +
+                "'instrumentId': 'AAAA', " +
                 "'qty': 250000, " +
                 "'price': 1.58, " +
                 "'side': 'B' " +
@@ -84,7 +84,7 @@ public class InstrumentLiquidityExtractorTest extends AbstractSparkUnitTest {
 
         Rfq rfq = Rfq.fromJson(validRfqJson);
 
-        Map<RfqMetadataFieldNames,Object> srMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades, rfqs);
-        Assert.assertEquals(Double.valueOf(0),srMap.get(RfqMetadataFieldNames.strikeRate));
+        Map<RfqMetadataFieldNames,Object> liqMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades);
+        Assert.assertEquals(null,liqMap.get(RfqMetadataFieldNames.strikeRate));
     }
 }
