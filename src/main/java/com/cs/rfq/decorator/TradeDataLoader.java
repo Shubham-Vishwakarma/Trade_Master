@@ -28,6 +28,7 @@ public class TradeDataLoader {
                         new StructField("LastPx", DoubleType, false, Metadata.empty()),
                         new StructField("TradeDate", DateType, false, Metadata.empty()),
                         new StructField("Currency", StringType, false, Metadata.empty()),
+                        new StructField("Side", IntegerType, false, Metadata.empty()),
                         new StructField("OrderID",LongType,false,Metadata.empty())
                 });
 
@@ -40,6 +41,5 @@ public class TradeDataLoader {
 
         return trades;
     }
-
 
 }
