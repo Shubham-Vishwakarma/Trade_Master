@@ -33,14 +33,31 @@ public class Rfq {
     long customerId = customers[(int) (Math.random()*10)];
 
 
-    public Rfq(Counterparty c, Instrument i, long  o) {
-        Id = o ;
+    public Rfq(Counterparty c, Instrument i) {
+        Id =  Math.abs(r.nextLong()) ;
         TraderId = c.traderId;
         EntityId = c.entityId;
         instrumentID = i.isin;
         qty = 50_000 * (int) ((Math.random() * 10) + 1); // 1-10 * 50_000
         price = randomizePrice(i.price);
         Side = (Math.random() > 0.5) ? "B" : "S";
+    }
+
+    public double getRfqPrice(){
+        return price;
+    }
+
+    public long getQuantity(){
+        return qty;
+    }
+
+    public int getRfqSide(){
+        if(Side.equals("B")){return 1;}
+        else{return 2;}
+    }
+
+    public long getRfqId(){
+        return Id;
     }
 
     private static double randomizePrice(double start) {
@@ -50,6 +67,8 @@ public class Rfq {
         int result = (int) start;
         return result / 1000.0;
     }
+
+    //counter party , instrument , orderId, price, quantity,side
 
     @Override
     public String toString() {
@@ -61,7 +80,7 @@ public class Rfq {
                 ", 'qty':" + qty +
                 ", 'price':" + price +
                 ", 'Side':" + "'"+Side+"'" +
-                ".'customer':"+ customerId+
+                ".'customerId':"+ customerId+
                 '}';
     }
 }

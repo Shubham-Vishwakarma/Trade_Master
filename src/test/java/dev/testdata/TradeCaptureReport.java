@@ -48,16 +48,16 @@ public class TradeCaptureReport {
     DateTimeFormatter tradeDateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
     DateTimeFormatter transactTimeFormatter = DateTimeFormat.forPattern("YYYYMMdd-HH:mm:ss");
 
-    public TradeCaptureReport(Counterparty c, Instrument i, DateTime d,long o) {
-        OrderID = o;
+    public TradeCaptureReport(Counterparty c, Instrument i, DateTime d ,double price ,long qty,int side,long rfqId) {
+        OrderID = rfqId;
         TraderId = c.traderId;
         EntityId = c.entityId;
         SecurityID = i.isin;
-        LastQty = 50_000 * (int) ((Math.random() * 10) + 1); // 1-10 * 50_000
-        LastPx = randomizePrice(i.price);
+        LastQty = qty; // 1-10 * 50_000
+        LastPx = price;
         TradeDate = tradeDateFormatter.print(d);
         TransactTime = transactTimeFormatter.print(d);
-        Side = (Math.random() > 0.5) ? 1 : 2;
+        Side = side;
     }
 
     private static double randomizePrice(double start) {
