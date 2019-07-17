@@ -1,8 +1,10 @@
 package com.cs.rfq.decorator;
 
 import com.cs.rfq.decorator.extractors.AbstractSparkUnitTest;
+import com.cs.rfq.decorator.extractors.InstrumentLiquidityExtractor;
 import com.cs.rfq.decorator.extractors.RfqMetadataFieldNames;
-import com.cs.rfq.decorator.extractors.TotalVolumeTradedForInstrumentExtractor;
+import com.cs.rfq.decorator.extractors.StrikeRateExtractor;
+import org.apache.commons.math3.util.Precision;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.junit.Assert;
@@ -11,25 +13,25 @@ import org.junit.Test;
 
 import java.util.Map;
 
-public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUnitTest {
+public class InstrumentLiquidityExtractorTest extends AbstractSparkUnitTest {
 
-    String filePath;
+    String filePathTrades;
     String filePathRfqs;
     Dataset<Row> trades;
     Dataset<Row> rfqs;
-    TotalVolumeTradedForInstrumentExtractor totalVolumeTradedForInstrumentExtractor;
+    InstrumentLiquidityExtractor instrumentLiquidityExtractor;
 
     @Before
     public void setup(){
-        filePath = getClass().getResource("loader-test-trades.json").getPath();
+        filePathTrades = getClass().getResource("loader-test-trades.json").getPath();
         filePathRfqs = getClass().getResource("loader-test-rfq.json").getPath();
-        trades = new TradeDataLoader().loadTrades(session, filePath);
+        trades = new TradeDataLoader().loadTrades(session, filePathTrades);
         rfqs = new RfqDataLoader().loadTrades(session, filePathRfqs);
-        totalVolumeTradedForInstrumentExtractor = new TotalVolumeTradedForInstrumentExtractor();
+        instrumentLiquidityExtractor = new InstrumentLiquidityExtractor();
     }
 
     @Test
-    public void VolumeMetadataTestValidInstruments(){
+    public void StrikerRateTestFirstCustomer(){
 
         String validRfqJson = "{" +
                 "'id': '123ABC', " +
@@ -44,17 +46,35 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
 
         Rfq rfq = Rfq.fromJson(validRfqJson);
 
-        //Total is 850000
-        Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades, rfqs);
-        Assert.assertEquals(Long.valueOf(850000),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
+        Map<RfqMetadataFieldNames,Object> srMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades);
+        Assert.assertEquals(Long.valueOf(850000),srMap.get(RfqMetadataFieldNames.volumeTradedForInstrumentPastMonth));
     }
 
     @Test
-    public void VolumeMetadataTestInvalidInstruments(){
+    public void StrikeRateTestSecondCustomer(){
         String validRfqJson = "{" +
                 "'id': '123ABC', " +
                 "'traderId': 3351266293154445953, " +
-                "'customerId': 101120022012, " +
+                "'customerId': 234530022223, " +
+                "'entityId': 5561279226039690843, " +
+                "'instrumentId': 'AT0000A0N9A0', " +
+                "'qty': 250000, " +
+                "'price': 1.58, " +
+                "'side': 'B' " +
+                "}";
+
+        Rfq rfq = Rfq.fromJson(validRfqJson);
+
+        Map<RfqMetadataFieldNames,Object> srMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades, rfqs);
+        Assert.assertEquals(Double.valueOf(Precision.round(200.0/6,2)),Double.valueOf(Precision.round(Double.valueOf(srMap.get(RfqMetadataFieldNames.strikeRate).toString()),2)));
+    }
+
+    @Test
+    public void StrikeRateTestInvalidCustomer(){
+        String validRfqJson = "{" +
+                "'id': '123ABC', " +
+                "'traderId': 3351266293154445953, " +
+                "'customerId': 234530022200, " +
                 "'entityId': 5561279226039690843, " +
                 "'instrumentId': 'BT0000A0VRQ6', " +
                 "'qty': 250000, " +
@@ -64,28 +84,7 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
 
         Rfq rfq = Rfq.fromJson(validRfqJson);
 
-        //Total is 0
-        Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades,rfqs);
-        Assert.assertEquals(Long.valueOf(0),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
-    }
-
-    @Test
-    public void VolumeMetadataTestInvalidCustomer(){
-        String validRfqJson = "{" +
-                "'id': '123ABC', " +
-                "'traderId': 3351266293154445953, " +
-                "'customerId': 2, " +
-                "'entityId': 5561279226039690843, " +
-                "'instrumentId': 'BT0000A0VRQ6', " +
-                "'qty': 250000, " +
-                "'price': 1.58, " +
-                "'side': 'B' " +
-                "}";
-
-        Rfq rfq = Rfq.fromJson(validRfqJson);
-
-        //Total is 0
-        Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades,rfqs);
-        Assert.assertEquals(Long.valueOf(0),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
+        Map<RfqMetadataFieldNames,Object> srMap = instrumentLiquidityExtractor.extractMetaData(rfq, session, trades, rfqs);
+        Assert.assertEquals(Double.valueOf(0),srMap.get(RfqMetadataFieldNames.strikeRate));
     }
 }
