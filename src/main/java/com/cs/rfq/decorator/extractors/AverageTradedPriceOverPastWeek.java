@@ -34,4 +34,9 @@ public class AverageTradedPriceOverPastWeek implements RfqMetadataExtractor{
         results.put(RfqMetadataFieldNames.averageTradedPriceOverPastWeek, averageTradedPrice);
         return results;
     }
+
+    @Override
+    public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades, Dataset<Row> rfqs) {
+        return null;
+    }
 }

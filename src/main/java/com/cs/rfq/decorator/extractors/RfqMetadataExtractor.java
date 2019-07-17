@@ -12,4 +12,5 @@ import java.util.Map;
  */
 public interface RfqMetadataExtractor {
     Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades);
+    Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades, Dataset<Row> rfqs);
 }

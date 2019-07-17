@@ -35,4 +35,9 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         return results;
     }
 
+    @Override
+    public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades, Dataset<Row> rfqs) {
+        return null;
+    }
+
 }
