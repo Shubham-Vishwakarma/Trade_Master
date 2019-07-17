@@ -46,7 +46,7 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
 
         //Total is 850000
         Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades, rfqs);
-        Assert.assertEquals(Long.valueOf(850000),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
+        Assert.assertEquals(Long.valueOf(1350000),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
     }
 
     @Test
