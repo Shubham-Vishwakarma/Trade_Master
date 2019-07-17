@@ -4,6 +4,7 @@ import com.cs.rfq.decorator.extractors.AbstractSparkUnitTest;
 import com.cs.rfq.decorator.extractors.RfqMetadataFieldNames;
 import com.cs.rfq.decorator.extractors.StrikeRateExtractor;
 import com.cs.rfq.decorator.extractors.TotalVolumeTradedForInstrumentExtractor;
+import org.apache.commons.math3.util.Precision;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.junit.Assert;
@@ -49,7 +50,7 @@ public class StrikeRateExtractorTest extends AbstractSparkUnitTest {
         rfq = Rfq.fromJson(validRfqJson);
         strikeRateExtractor = new StrikeRateExtractor();
         srMap = strikeRateExtractor.extractMetaData(rfq, session, trades, rfqs);
-        Assert.assertEquals(Double.valueOf(200/6),srMap.get(RfqMetadataFieldNames.strikeRate));
+        Assert.assertEquals(Double.valueOf(Precision.round(200.0/6,2)),Double.valueOf(Precision.round(Double.valueOf(srMap.get(RfqMetadataFieldNames.strikeRate).toString()),2)));
     }
 
     @Test
