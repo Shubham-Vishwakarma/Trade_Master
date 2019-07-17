@@ -61,7 +61,7 @@ public class Rfq {
                 ", 'qty':" + qty +
                 ", 'price':" + price +
                 ", 'Side':" + "'"+Side+"'" +
-                ".'customer':"+ customerId+
+                ".'customerId':"+ customerId+
                 '}';
     }
 }

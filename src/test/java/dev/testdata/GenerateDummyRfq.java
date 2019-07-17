@@ -18,7 +18,7 @@ public class GenerateDummyRfq {
     private static final String instruments_file = "src/test/resources/trades/instrument-static.csv";
 
     //output trade reports file:
-    private static final String rfqs_file = "src/test/resources/trades/rfqs.json";
+    private static final String rfqs_file = "src/test/resources/rfqs/rfqs.json";
     private static final String trades_file = "src/test/resources/trades/trades.json";
 
 
@@ -69,10 +69,9 @@ public class GenerateDummyRfq {
                     });
             });
         });
-        
+
         //order the results by date
 //        trades.sort(Comparator.comparing(t -> t.TransactTime));
-
         //save to rfqs file
         PrintWriter out1 = new PrintWriter(new FileWriter(Paths.get(rfqs_file).toFile()));
         rfqs.forEach(out1::println);
