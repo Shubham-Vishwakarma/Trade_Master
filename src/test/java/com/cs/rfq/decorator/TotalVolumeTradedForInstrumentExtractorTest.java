@@ -14,10 +14,13 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
     @Test
     public void VolumeMetadataTestValidInstruments(){
         String filePath = getClass().getResource("loader-test-trades.json").getPath();
+        String filePathRfqs = getClass().getResource("loader-test-rfq.json").getPath();
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
+        Dataset<Row> rfqs = new RfqDataLoader().loadTrades(session, filePathRfqs);
         String validRfqJson = "{" +
                 "'id': '123ABC', " +
                 "'traderId': 3351266293154445953, " +
+                "'customerId': 101120022012, " +
                 "'entityId': 5561279226039690843, " +
                 "'instrumentId': 'AT0000A0VRQ6', " +
                 "'qty': 250000, " +
@@ -29,24 +32,8 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
 
         //Total is 850000
         TotalVolumeTradedForInstrumentExtractor totalVolumeTradedForInstrumentExtractor = new TotalVolumeTradedForInstrumentExtractor();
-        Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades);
+        Map<RfqMetadataFieldNames,Object> volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades, rfqs);
         Assert.assertEquals(Long.valueOf(850000),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
-
-        validRfqJson = "{" +
-                "'id': '123ABC', " +
-                "'traderId': 3351266293154445953, " +
-                "'entityId': 5561279226039690843, " +
-                "'instrumentId': 'AT0000A0N9A0', " +
-                "'qty': 250000, " +
-                "'price': 1.58, " +
-                "'side': 'B' " +
-                "}";
-
-        rfq = Rfq.fromJson(validRfqJson);
-        //Total is 850000
-        totalVolumeTradedForInstrumentExtractor = new TotalVolumeTradedForInstrumentExtractor();
-        volMap = totalVolumeTradedForInstrumentExtractor.extractMetaData(rfq, session, trades);
-        Assert.assertEquals(Long.valueOf(50000),volMap.get(RfqMetadataFieldNames.volumeTradedForInstrument));
     }
 
     @Test
@@ -57,6 +44,7 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
         String validRfqJson = "{" +
                 "'id': '123ABC', " +
                 "'traderId': 3351266293154445953, " +
+                "'customerId': 101120022012, " +
                 "'entityId': 5561279226039690843, " +
                 "'instrumentId': 'BT0000A0VRQ6', " +
                 "'qty': 250000, " +
