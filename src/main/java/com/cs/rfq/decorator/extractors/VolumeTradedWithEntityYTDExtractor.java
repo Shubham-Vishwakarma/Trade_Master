@@ -19,12 +19,17 @@ public class VolumeTradedWithEntityYTDExtractor implements RfqMetadataExtractor 
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
+        return null;
+    }
 
-        String query = String.format("SELECT sum(LastQty) from trade where EntityId='%s' AND TradeDate >= '%s'",
-                rfq.getEntityId(),
+    @Override
+    public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades, Dataset<Row> rfqs) {
+        String query = String.format("SELECT sum(trade.LastQty) from trade JOIN rfqt ON trade.OrderID = rfqt.id where rfqt.customerId='%s' AND TradeDate >= '%s'",
+                rfq.getCustomerId(),
                 since);
 
         trades.createOrReplaceTempView("trade");
+        rfqs.createOrReplaceTempView("rfqt");
         Dataset<Row> sqlQueryResults = session.sql(query);
 
         Object volume = sqlQueryResults.first().get(0);
@@ -33,13 +38,8 @@ public class VolumeTradedWithEntityYTDExtractor implements RfqMetadataExtractor 
         }
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(RfqMetadataFieldNames.volumeTradedYearToDate, volume);
+        results.put(RfqMetadataFieldNames.volumeTradedByLegalEntity, volume);
         return results;
-    }
-
-    @Override
-    public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades, Dataset<Row> rfqs) {
-        return null;
     }
 
     protected void setSince(String since) {

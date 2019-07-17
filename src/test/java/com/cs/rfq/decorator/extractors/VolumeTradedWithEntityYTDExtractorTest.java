@@ -33,7 +33,7 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.volumeTradedByLegalEntity);
 
         assertEquals(1_350_000L, result);
     }
@@ -50,7 +50,7 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.volumeTradedByLegalEntity);
 
         assertEquals(0L, result);
     }
