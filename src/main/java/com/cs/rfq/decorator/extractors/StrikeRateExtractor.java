@@ -37,7 +37,7 @@ public class StrikeRateExtractor implements RfqMetadataExtractor {
             rfqCount = 0L;
         }
 
-        double str = (double)tradeCount/(double)rfqCount*100;
+        double str = Double.valueOf(tradeCount.toString())/Double.valueOf(rfqCount.toString())*100;
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(RfqMetadataFieldNames.strikeRate, str);
