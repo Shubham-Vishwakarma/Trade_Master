@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class StrikeRateExtractorTest extends AbstractSparkUnitTest {
     @Test
-    public void VolumeMetadataTestValidInstruments(){
+    public void StrikerRateTestFirstCustomer(){
         String filePathTrades = getClass().getResource("loader-test-trades.json").getPath();
         String filePathRfqs = getClass().getResource("loader-test-rfq.json").getPath();
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePathTrades);
@@ -35,8 +35,15 @@ public class StrikeRateExtractorTest extends AbstractSparkUnitTest {
         StrikeRateExtractor strikeRateExtractor = new StrikeRateExtractor();
         Map<RfqMetadataFieldNames,Object> srMap = strikeRateExtractor.extractMetaData(rfq, session, trades, rfqs);
         Assert.assertEquals(Double.valueOf(60),srMap.get(RfqMetadataFieldNames.strikeRate));
+    }
 
-        validRfqJson = "{" +
+    @Test
+    public void StrikeRateTestSecondCustomer(){
+        String filePathTrades = getClass().getResource("loader-test-trades.json").getPath();
+        String filePathRfqs = getClass().getResource("loader-test-rfq.json").getPath();
+        Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePathTrades);
+        Dataset<Row> rfqs = new RfqDataLoader().loadTrades(session, filePathRfqs);
+        String validRfqJson = "{" +
                 "'id': '123ABC', " +
                 "'traderId': 3351266293154445953, " +
                 "'customerId': 234530022223, " +
@@ -47,14 +54,15 @@ public class StrikeRateExtractorTest extends AbstractSparkUnitTest {
                 "'side': 'B' " +
                 "}";
 
-        rfq = Rfq.fromJson(validRfqJson);
-        strikeRateExtractor = new StrikeRateExtractor();
-        srMap = strikeRateExtractor.extractMetaData(rfq, session, trades, rfqs);
+        Rfq rfq = Rfq.fromJson(validRfqJson);
+
+        StrikeRateExtractor strikeRateExtractor = new StrikeRateExtractor();
+        Map<RfqMetadataFieldNames,Object> srMap = strikeRateExtractor.extractMetaData(rfq, session, trades, rfqs);
         Assert.assertEquals(Double.valueOf(Precision.round(200.0/6,2)),Double.valueOf(Precision.round(Double.valueOf(srMap.get(RfqMetadataFieldNames.strikeRate).toString()),2)));
     }
 
     @Test
-    public void VolumeMetadataTestInvalidInstruments(){
+    public void StrikeRateTestInvalidCustomer(){
         String filePath = getClass().getResource("loader-test-trades.json").getPath();
 
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
