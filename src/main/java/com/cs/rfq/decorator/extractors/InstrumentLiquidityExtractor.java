@@ -13,11 +13,7 @@ import java.util.Map;
 public class InstrumentLiquidityExtractor implements RfqMetadataExtractor {
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
-        //long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-        //String pastMonthMs = DateTime.now().withMillis(todayMs).minusMonths(1);
         LocalDate pastMonthMs = LocalDate.now().minusMonths(1);
-
-        System.out.println("ATTN :" + pastMonthMs);
 
         String query = String.format("SELECT sum(LastQty) from trade  where SecurityID='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
