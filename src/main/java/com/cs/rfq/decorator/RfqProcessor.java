@@ -3,6 +3,7 @@ package com.cs.rfq.decorator;
 import com.cs.rfq.decorator.extractors.*;
 import com.cs.rfq.decorator.publishers.MetadataJsonLogPublisher;
 import com.cs.rfq.decorator.publishers.MetadataPublisher;
+import com.cs.rfq.utils.RfqHistorySimulator;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -73,6 +74,10 @@ public class RfqProcessor {
 
     public void processRfq(Rfq rfq) {
         log.info(String.format("Received Rfq: %s", rfq.toString()));
+
+        //adding rfqs to log file
+        RfqHistorySimulator  rfqhist = new RfqHistorySimulator(rfq);
+        rfqhist.logRfq();
 
         //create a blank map for the metadata to be collected
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();

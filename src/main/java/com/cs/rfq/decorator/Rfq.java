@@ -31,21 +31,21 @@ public class Rfq implements Serializable {
         rfq.quantity = Long.valueOf(fields.get("qty"));
         rfq.customerId = Long.valueOf(fields.get("customerId"));
         rfq.price = Double.valueOf(fields.get("price"));
-        rfq.side = fields.get("side");
+        rfq.side = fields.get("Side");
         return rfq;
     }
 
     @Override
     public String toString() {
-        return "Rfq{" +
-                "id='" + id + '\'' +
-                ", isin='" + isin + '\'' +
-                ", traderId=" + traderId +
-                ", entityId=" + entityId +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", side=" + side +
-                ", customerId=" + customerId +
+        return "{" +
+                "'id':"+ id +
+                ", 'traderId':" + traderId +
+                ", 'entityId':" + entityId +
+                ", 'instrumentId':" + "'"+isin+"'" +
+                ", 'qty':" + quantity +
+                ", 'price':" + price +
+                ", 'Side':" + "'"+side+"'" +
+                ", 'customerId':"+ customerId+
                 '}';
     }
 
