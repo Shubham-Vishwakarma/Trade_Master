@@ -1,4 +1,4 @@
-package com.cs.rfq.decorator.extractors;
+package com.cs.rfq.utils;
 
 public class Ratio {
     //the ratio is a:b
