@@ -42,7 +42,7 @@ public class TradeSideBiasTest extends AbstractSparkUnitTest {
 
         Map<RfqMetadataFieldNames, Object> result = tradeSideBias.extractMetaData(rfq, session, trades);
 
-        assertEquals("1:0", result.get(RfqMetadataFieldNames.buyUponSellForWeek));
+        assertEquals("2:0", result.get(RfqMetadataFieldNames.buyUponSellForWeek));
         assertEquals("2:0", result.get(RfqMetadataFieldNames.buyUponSellForMonth));
     }
 

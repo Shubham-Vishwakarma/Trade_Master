@@ -18,7 +18,7 @@ public class TradeDataLoaderTest extends AbstractSparkUnitTest {
 
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
 
-        assertEquals(5, trades.count());
+        assertEquals(6, trades.count());
 
         Long traderId = trades.first().getLong(0);
         Long entityId = trades.first().getLong(1);
@@ -34,7 +34,7 @@ public class TradeDataLoaderTest extends AbstractSparkUnitTest {
         assertEquals((Long) 500000L, lastQty);
         assertEquals((Double) 139.648, lastPx);
         //2018-06-09
-        Date expected = new Date(new DateTime().withYear(2018).withMonthOfYear(6).withDayOfMonth(9).withMillisOfDay(0).getMillis());
+        Date expected = new Date(new DateTime().withYear(2019).withMonthOfYear(7).withDayOfMonth(12).withMillisOfDay(0).getMillis());
         assertEquals(expected, tradeDate);
         assertEquals("EUR", currency);
     }

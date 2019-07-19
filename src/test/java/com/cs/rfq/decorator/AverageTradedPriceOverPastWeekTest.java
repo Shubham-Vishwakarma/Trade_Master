@@ -46,7 +46,7 @@ public class AverageTradedPriceOverPastWeekTest extends AbstractSparkUnitTest {
 
         Map<RfqMetadataFieldNames, Object> result = averageTradedPrice.extractMetaData(rfq, session, trades);
 
-        assertEquals(140.066, result.get(RfqMetadataFieldNames.averageTradedPriceOverPastWeek));
+        assertEquals(139.857, result.get(RfqMetadataFieldNames.averageTradedPriceOverPastWeek));
     }
 
     @Test

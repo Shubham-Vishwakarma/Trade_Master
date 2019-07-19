@@ -14,9 +14,10 @@ public class RfqTest {
                 "'traderId': 3351266293154445953, " +
                 "'entityId': 5561279226039690843, " +
                 "'instrumentId': 'AT0000383864', " +
+                "'customerId': 374587234589374958, " +
                 "'qty': 250000, " +
                 "'price': 1.58, " +
-                "'side': 'B' " +
+                "'Side': 'B' " +
                 "}";
 
         Rfq rfq = Rfq.fromJson(validRfqJson);
@@ -27,6 +28,7 @@ public class RfqTest {
         assertEquals("AT0000383864", rfq.getIsin());
         assertEquals((Long) 250000L, rfq.getQuantity());
         assertEquals((Double) 1.58, rfq.getPrice());
+        assertEquals((Long)374587234589374958L,rfq.getCustomerId());
         assertEquals("B", rfq.getSide());
         assertTrue(rfq.isBuySide());
         assertFalse(rfq.isSellSide());
